@@ -1,0 +1,1421 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <title>Yandê — Em breve</title>
+    <meta name="description"
+        content="Yandê — agência de design, identidade visual e desenvolvimento de software. Algo grande está por vir." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        :root {
+            --bg-0: #070708;
+            --bg-1: #0d0d12;
+            --ink-0: #f6efe6;
+            --ink-1: #b8b0a4;
+            --ink-2: #6f6a62;
+            --accent-1: #ff6a3d;
+            /* terracota brasa */
+            --accent-2: #ffb86b;
+            /* dourado pôr-do-sol */
+            --accent-3: #7a5cff;
+            /* violeta ametista */
+            --accent-4: #22e5b3;
+            /* verde mata */
+            --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+            --ease: cubic-bezier(.2, .8, .2, 1);
+            --ease-out: cubic-bezier(.16, 1, .3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: var(--bg-0);
+            color: var(--ink-0);
+            font-family: "Inter", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden
+        }
+
+        body {
+            min-height: 100svh;
+            position: relative;
+            cursor: none
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            background: none;
+            border: 0;
+            cursor: none
+        }
+
+        input {
+            font: inherit;
+            color: inherit;
+            background: none;
+            border: 0;
+            outline: 0
+        }
+
+        ::selection {
+            background: var(--accent-1);
+            color: #0b0b0d
+        }
+
+        /* === Camadas de fundo === */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            display: block
+        }
+
+        .grain {
+            position: fixed;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: var(--grain);
+            opacity: .55;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: 5;
+            animation: grainShift 8s steps(8) infinite
+        }
+
+        @keyframes grainShift {
+            0% {
+                transform: translate(0, 0)
+            }
+
+            25% {
+                transform: translate(-3%, 2%)
+            }
+
+            50% {
+                transform: translate(2%, -2%)
+            }
+
+            75% {
+                transform: translate(-2%, -3%)
+            }
+
+            100% {
+                transform: translate(0, 0)
+            }
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4;
+            background:
+                radial-gradient(ellipse at 50% 35%, transparent 0%, transparent 45%, rgba(0, 0, 0, .55) 100%),
+                radial-gradient(circle at 85% 15%, rgba(255, 106, 61, .18), transparent 35%),
+                radial-gradient(circle at 12% 80%, rgba(122, 92, 255, .18), transparent 40%);
+        }
+
+        /* === Cursor customizado === */
+        .cursor {
+            position: fixed;
+            left: 0;
+            top: 0;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            transform: translate(-50%, -50%);
+            transition: transform .15s var(--ease), width .25s var(--ease), height .25s var(--ease)
+        }
+
+        .cursor-ring {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 255, 255, .6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width .35s var(--ease), height .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease);
+            pointer-events: none;
+            z-index: 9998;
+            mix-blend-mode: difference
+        }
+
+        body.is-hover .cursor-ring {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, .08);
+            border-color: rgba(255, 255, 255, .9)
+        }
+
+        body.is-hover .cursor-dot {
+            width: 0;
+            height: 0
+        }
+
+        /* === Loader === */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-0);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1.6rem;
+            transition: opacity 1.2s var(--ease), visibility 1.2s var(--ease);
+            will-change: opacity
+        }
+
+        .loader.gone {
+            opacity: 0;
+            visibility: hidden
+        }
+
+        .loader-mark,
+        .loader-bar,
+        .loader-text {
+            transition: opacity .6s var(--ease), transform .6s var(--ease)
+        }
+
+        .loader.gone .loader-mark {
+            transform: scale(.92);
+            opacity: 0
+        }
+
+        .loader.gone .loader-bar,
+        .loader.gone .loader-text {
+            opacity: 0;
+            transform: translateY(8px)
+        }
+
+        /* Reveal global suave para tudo que tem body.ready */
+        .shell {
+            opacity: 0;
+            transition: opacity 1.4s var(--ease) .2s
+        }
+
+        body.ready .shell {
+            opacity: 1
+        }
+
+        .loader-mark {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .15);
+            position: relative;
+            display: grid;
+            place-items: center;
+            overflow: hidden
+        }
+
+        .loader-mark::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--accent-1), var(--accent-3), var(--accent-4), var(--accent-2), var(--accent-1));
+            animation: spin 1.6s linear infinite;
+            mask: radial-gradient(circle, transparent 56%, #000 58%);
+            -webkit-mask: radial-gradient(circle, transparent 56%, #000 58%)
+        }
+
+        .loader-mark span {
+            font-family: "Fraunces", serif;
+            font-style: italic;
+            font-weight: 500;
+            font-size: 1.5rem;
+            letter-spacing: -.02em
+        }
+
+        .loader-text {
+            font-family: "JetBrains Mono", monospace;
+            font-size: .72rem;
+            letter-spacing: .32em;
+            color: var(--ink-2);
+            text-transform: uppercase
+        }
+
+        .loader-bar {
+            width: min(220px, 40vw);
+            height: 1px;
+            background: rgba(255, 255, 255, .08);
+            overflow: hidden;
+            border-radius: 1px
+        }
+
+        .loader-bar i {
+            display: block;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            animation: loadFill 1.6s var(--ease-out) forwards
+        }
+
+        @keyframes loadFill {
+            to {
+                width: 100%
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* === Layout principal === */
+        .shell {
+            position: relative;
+            z-index: 10;
+            min-height: 100svh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            padding: clamp(1.2rem, 2.4vw, 2rem) clamp(1.2rem, 3vw, 2.6rem)
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            position: relative;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1a1a22, #0a0a10);
+            border: 1px solid rgba(255, 255, 255, .08)
+        }
+
+        .brand-mark svg {
+            width: 22px;
+            height: 22px
+        }
+
+        .brand-name {
+            font-family: "Fraunces", serif;
+            font-weight: 500;
+            font-size: 1.05rem;
+            letter-spacing: -.01em
+        }
+
+        .brand-name em {
+            font-style: italic;
+            color: var(--accent-2)
+        }
+
+        .meta {
+            display: flex;
+            align-items: center;
+            gap: 1.4rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: .72rem;
+            letter-spacing: .18em;
+            color: var(--ink-2);
+            text-transform: uppercase
+        }
+
+        .meta .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-4);
+            box-shadow: 0 0 0 0 rgba(34, 229, 179, .6);
+            animation: pulse 2.2s var(--ease) infinite;
+            display: inline-block;
+            margin-right: .55rem;
+            vertical-align: middle
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(34, 229, 179, .55)
+            }
+
+            70% {
+                box-shadow: 0 0 0 12px rgba(34, 229, 179, 0)
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 229, 179, 0)
+            }
+        }
+
+        .meta .sep {
+            opacity: .3
+        }
+
+        .meta .hide-sm {
+            display: inline
+        }
+
+        @media (max-width:720px) {
+            .meta .hide-sm {
+                display: none
+            }
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: clamp(2rem, 8vh, 6rem) 0
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: .65rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: .72rem;
+            letter-spacing: .32em;
+            text-transform: uppercase;
+            color: var(--ink-1);
+            margin-bottom: clamp(1.2rem, 3vw, 2.2rem)
+        }
+
+        .eyebrow .line {
+            width: 38px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-1))
+        }
+
+        h1.hero {
+            font-family: "Fraunces", serif;
+            font-weight: 300;
+            line-height: 1.05;
+            letter-spacing: -.035em;
+            font-size: clamp(3.2rem, 11vw, 10.5rem);
+            margin-bottom: clamp(1.2rem, 3vw, 2rem);
+        }
+
+        h1.hero .row {
+            display: block;
+            overflow: hidden;
+            padding: .18em 0 .12em;
+            line-height: 1
+        }
+
+        h1.hero .row span {
+            display: inline-block;
+            transform: translateY(110%);
+            opacity: 0;
+            transition: transform 1.4s var(--ease-out), opacity 1.2s var(--ease-out);
+            will-change: transform, opacity;
+            padding-bottom: .08em
+        }
+
+        body.ready h1.hero .row span {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        h1.hero .row:nth-child(1) span {
+            transition-delay: .15s
+        }
+
+        h1.hero .row:nth-child(2) span {
+            transition-delay: .3s
+        }
+
+        h1.hero .row:nth-child(3) span {
+            transition-delay: .45s
+        }
+
+        h1.hero em {
+            font-style: italic;
+            font-weight: 400;
+            background: linear-gradient(120deg, var(--accent-1) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% 200%;
+            animation: gradMove 8s var(--ease) infinite
+        }
+
+        @keyframes gradMove {
+
+            0%,
+            100% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+        }
+
+        .lede {
+            max-width: 640px;
+            color: var(--ink-1);
+            font-size: clamp(1rem, 1.4vw, 1.18rem);
+            line-height: 1.55;
+            margin-bottom: clamp(1.8rem, 4vw, 2.6rem);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s var(--ease) .5s, transform 1s var(--ease) .5s;
+        }
+
+        body.ready .lede {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .lede strong {
+            color: var(--ink-0);
+            font-weight: 500
+        }
+
+        /* === Pílulas de serviços === */
+        .pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-bottom: clamp(2rem, 5vw, 3rem);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s var(--ease) .7s, transform 1s var(--ease) .7s
+        }
+
+        body.ready .pills {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .pill {
+            padding: .5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 99px;
+            font-size: .78rem;
+            color: var(--ink-1);
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, .02);
+            transition: all .4s var(--ease)
+        }
+
+        .pill:hover {
+            color: var(--ink-0);
+            border-color: rgba(255, 255, 255, .3);
+            background: rgba(255, 255, 255, .05)
+        }
+
+        /* === Formulário === */
+        .signup {
+            display: flex;
+            flex-direction: column;
+            gap: .9rem;
+            max-width: 520px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s var(--ease) .9s, transform 1s var(--ease) .9s
+        }
+
+        body.ready .signup {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .signup-label {
+            font-family: "JetBrains Mono", monospace;
+            font-size: .7rem;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+            color: var(--ink-2)
+        }
+
+        .signup form {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 99px;
+            padding: .4rem .4rem .4rem 1.4rem;
+            background: rgba(255, 255, 255, .03);
+            backdrop-filter: blur(10px);
+            transition: border-color .4s var(--ease), background .4s var(--ease)
+        }
+
+        .signup form:focus-within {
+            border-color: rgba(255, 184, 107, .55);
+            background: rgba(255, 184, 107, .04)
+        }
+
+        .signup input {
+            flex: 1;
+            font-size: .95rem;
+            padding: .7rem 0;
+            cursor: none
+        }
+
+        .signup input::placeholder {
+            color: var(--ink-2)
+        }
+
+        .signup button {
+            position: relative;
+            padding: .85rem 1.6rem;
+            border-radius: 99px;
+            background: linear-gradient(120deg, var(--accent-1), var(--accent-2));
+            color: #15110d;
+            font-weight: 600;
+            font-size: .88rem;
+            letter-spacing: .02em;
+            transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+            overflow: hidden;
+            white-space: nowrap
+        }
+
+        .signup button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 32px -10px rgba(255, 106, 61, .55)
+        }
+
+        .signup button .arr {
+            display: inline-block;
+            margin-left: .4rem;
+            transition: transform .4s var(--ease)
+        }
+
+        .signup button:hover .arr {
+            transform: translateX(3px)
+        }
+
+        .signup-note {
+            font-size: .78rem;
+            color: var(--ink-2);
+            min-height: 1.2em
+        }
+
+        .signup-note.ok {
+            color: var(--accent-4)
+        }
+
+        .signup-note.err {
+            color: #ff7a7a
+        }
+
+        /* === Footer === */
+        footer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding-top: 2rem
+        }
+
+        .foot-col {
+            display: flex;
+            flex-direction: column;
+            gap: .45rem;
+            font-size: .82rem
+        }
+
+        .foot-col .k {
+            font-family: "JetBrains Mono", monospace;
+            font-size: .68rem;
+            letter-spacing: .28em;
+            color: var(--ink-2);
+            text-transform: uppercase
+        }
+
+        .foot-col .v {
+            color: var(--ink-1)
+        }
+
+        .foot-col a.v {
+            position: relative;
+            display: inline-block;
+            width: fit-content
+        }
+
+        .foot-col a.v::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 1px;
+            background: currentColor;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform .5s var(--ease)
+        }
+
+        .foot-col a.v:hover {
+            color: var(--ink-0)
+        }
+
+        .foot-col a.v:hover::after {
+            transform: scaleX(1);
+            transform-origin: left
+        }
+
+        .scroll-hint {
+            position: fixed;
+            right: clamp(1.2rem, 3vw, 2.6rem);
+            bottom: clamp(1.2rem, 2.4vw, 2rem);
+            writing-mode: vertical-rl;
+            font-family: "JetBrains Mono", monospace;
+            font-size: .68rem;
+            letter-spacing: .36em;
+            text-transform: uppercase;
+            color: var(--ink-2);
+            z-index: 11;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .8rem
+        }
+
+        .scroll-hint .l {
+            width: 1px;
+            height: 48px;
+            background: linear-gradient(180deg, transparent, var(--ink-2));
+            animation: lineGrow 2.4s var(--ease) infinite
+        }
+
+        @keyframes lineGrow {
+
+            0%,
+            100% {
+                transform: scaleY(.4);
+                opacity: .4
+            }
+
+            50% {
+                transform: scaleY(1);
+                opacity: 1
+            }
+        }
+
+        @media (max-width:720px) {
+            .scroll-hint {
+                display: none
+            }
+        }
+
+        /* === Reduce motion === */
+        @media (prefers-reduced-motion:reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .001ms !important
+            }
+
+            body {
+                cursor: auto
+            }
+
+            .cursor,
+            .cursor-ring {
+                display: none
+            }
+        }
+
+        @media (hover:none) {
+            body {
+                cursor: auto
+            }
+
+            .cursor,
+            .cursor-ring {
+                display: none
+            }
+
+            button,
+            a,
+            input {
+                cursor: auto
+            }
+        }
+
+        /* === Responsivo === */
+        @media (max-width:560px) {
+            .signup form {
+                flex-direction: column;
+                border-radius: 18px;
+                padding: .5rem;
+                gap: .4rem;
+                align-items: stretch
+            }
+
+            .signup input {
+                padding: .85rem 1rem
+            }
+
+            .signup button {
+                width: 100%;
+                justify-content: center
+            }
+
+            footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.4rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-mark"><span>Y</span></div>
+        <div class="loader-bar"><i></i></div>
+        <div class="loader-text">Carregando experiência</div>
+    </div>
+
+    <!-- Cursor -->
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div class="cursor" id="cursor">
+        <div class="cursor-dot"></div>
+    </div>
+
+    <!-- Fundo 3D -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+
+    <div class="shell">
+
+        <header>
+            <div class="brand" data-hover>
+                <div class="brand-mark">
+                    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="lgHead" x1="0" y1="0" x2="32" y2="32">
+                                <stop offset="0" stop-color="#ff6a3d" />
+                                <stop offset=".5" stop-color="#ffb86b" />
+                                <stop offset="1" stop-color="#7a5cff" />
+                            </linearGradient>
+                        </defs>
+                        <!-- cabeça -->
+                        <path
+                            d="M16 4 C9.5 4 5 8.5 5 14 C5 17 6 19 7.5 20.2 C7.5 20.2 8.2 21 8 22 C7.7 23 7 23.6 7 23.6 C7 23.6 8.3 23 9.2 22.4 C9.6 22.7 10.2 22.9 10.8 22.9 C11.4 22.9 12 22.6 12.4 22.2 C12.9 22.7 13.6 23 14.4 23 C15.1 23 15.8 22.7 16.3 22.2 C16.7 22.7 17.4 23 18.1 23 C18.9 23 19.6 22.7 20.1 22.2 C20.5 22.6 21.1 22.9 21.7 22.9 C22.3 22.9 22.9 22.7 23.3 22.4 C24.2 23 25.5 23.6 25.5 23.6 C25.5 23.6 24.8 23 24.5 22 C24.3 21 25 20.2 25 20.2 C26.5 19 27.5 17 27.5 14 C27.5 8.5 22.5 4 16 4 Z"
+                            stroke="url(#lgHead)" stroke-width="1.4" stroke-linejoin="round" fill="none" />
+                        <!-- olhos -->
+                        <circle cx="12.5" cy="13" r="1.2" fill="url(#lgHead)" />
+                        <circle cx="19.5" cy="13" r="1.2" fill="url(#lgHead)" />
+                    </svg>
+                </div>
+                <div class="brand-name">Yand<em>ê</em></div>
+            </div>
+
+            <div class="meta" aria-label="Status">
+                <span><span class="dot"></span>Em construção</span>
+                <span class="sep hide-sm">/</span>
+                <span class="hide-sm" id="clock">—</span>
+                <span class="sep">/</span>
+                <span>Brasil</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="eyebrow"><span class="line"></span> Estúdio criativo · Software · Identidade</div>
+
+            <h1 class="hero" aria-label="Algo grande está sendo desenhado">
+                <span class="row"><span>Algo grande</span></span>
+                <span class="row"><span>está sendo</span></span>
+                <span class="row"><span><em>desenhado.</em></span></span>
+            </h1>
+
+            <p class="lede">
+                Yandê é uma <strong>agência de design, identidade visual e desenvolvimento de software</strong> nascendo
+                com um compromisso só: traduzir a essência de cada marca em experiências que se sentem, se lembram e se
+                vivem. Estamos apenas afinando os últimos detalhes... Em breve, o palco será seu.
+            </p>
+
+            <div class="pills">
+                <span class="pill" data-hover>Identidade Visual</span>
+                <span class="pill" data-hover>Branding</span>
+                <span class="pill" data-hover>Web & Produto</span>
+                <span class="pill" data-hover>Software sob medida</span>
+                <span class="pill" data-hover>Direção de arte</span>
+            </div>
+
+            <div class="signup">
+                <span class="signup-label">Receba o lançamento em primeira mão</span>
+                <form id="signupForm" novalidate>
+                    <input type="email" id="emailInput" name="email" placeholder="seu@email.com" required
+                        autocomplete="email" aria-label="Seu e-mail" data-hover />
+                    <button type="submit" data-hover>
+                        Quero saber<span class="arr">→</span>
+                    </button>
+                </form>
+                <span class="signup-note" id="signupNote" role="status" aria-live="polite"></span>
+            </div>
+        </main>
+
+        <footer>
+            <div class="foot-col">
+                <span class="k">WhatsApp</span>
+                <a class="v" href="https://wa.me/5575998615843" target="_blank" rel="noopener" data-hover>+55 75
+                    99861-5843 ↗</a>
+            </div>
+            <div class="foot-col" style="text-align:right">
+                <span class="k">© 2026</span>
+                <span class="v">Yandê. Todos os direitos reservados.</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">
+        <span class="l"></span>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+    <script>
+        /* ============================================================
+           CURSOR CUSTOMIZADO
+           ============================================================ */
+        (() => {
+            const ring = document.getElementById('cursorRing');
+            const dot = document.getElementById('cursor');
+            if (!ring || !dot) return;
+            if (window.matchMedia('(hover:none)').matches) return;
+
+            let tx = window.innerWidth / 2, ty = window.innerHeight / 2;
+            let rx = tx, ry = ty;
+
+            window.addEventListener('mousemove', e => {
+                tx = e.clientX; ty = e.clientY;
+                dot.style.transform = `translate(${tx}px,${ty}px)`;
+            });
+
+            const lerp = (a, b, n) => a + (b - a) * n;
+            const tick = () => {
+                rx = lerp(rx, tx, .18);
+                ry = lerp(ry, ty, .18);
+                ring.style.transform = `translate(${rx}px,${ry}px)`;
+                requestAnimationFrame(tick);
+            };
+            tick();
+
+            document.querySelectorAll('[data-hover]').forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('is-hover'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('is-hover'));
+            });
+        })();
+
+        /* ============================================================
+           RELÓGIO BRASÍLIA
+           ============================================================ */
+        (() => {
+            const el = document.getElementById('clock');
+            if (!el) return;
+            const fmt = new Intl.DateTimeFormat('pt-BR', {
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                timeZone: 'America/Sao_Paulo', hour12: false
+            });
+            const tick = () => { el.textContent = fmt.format(new Date()) + ' BRT'; };
+            tick(); setInterval(tick, 1000);
+        })();
+
+        /* ============================================================
+           FORMULÁRIO  →  envia para Telegram Bot
+           ------------------------------------------------------------
+           CONFIGURE estas duas constantes:
+             1) TELEGRAM_BOT_TOKEN: token do BotFather (ex.: "1234:ABC...")
+             2) TELEGRAM_CHAT_ID:   seu chat_id (descubra falando com
+                @userinfobot ou @RawDataBot no Telegram)
+           ATENÇÃO: como este JS roda no navegador do visitante, qualquer
+           pessoa pode ver o token. Para este bot dedicado a receber
+           cadastros isso costuma ser aceitável (o pior cenário é alguém
+           mandar mensagens pro próprio bot). Para máxima segurança, mova
+           este envio para um proxy (Cloudflare Worker / Vercel Function).
+           ============================================================ */
+        const TELEGRAM_BOT_TOKEN = "8753349948:AAEwtWAFULFRNwViu0ePKt3wYEe9CS2C3YU";
+        const TELEGRAM_CHAT_ID = "1425883918";
+
+        (() => {
+            const form = document.getElementById('signupForm');
+            const input = document.getElementById('emailInput');
+            const button = form?.querySelector('button[type="submit"]');
+            const note = document.getElementById('signupNote');
+            if (!form) return;
+
+            const valid = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+
+            const sendToTelegram = async (email) => {
+                const now = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+                const text =
+                    `🐙 *Novo cadastro Yandê*\n\n` +
+                    `*E-mail:* \`${email}\`\n` +
+                    `*Quando:* ${now} (BRT)\n` +
+                    `*Origem:* ${location.href}\n` +
+                    `*User-Agent:* ${navigator.userAgent}`;
+
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text,
+                        parse_mode: 'Markdown',
+                        disable_web_page_preview: true,
+                    }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok || data.ok === false) {
+                    throw new Error(data.description || `HTTP ${res.status}`);
+                }
+                return data;
+            };
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const v = input.value.trim();
+                note.classList.remove('ok', 'err');
+
+                if (!valid(v)) {
+                    note.textContent = 'Hmm… esse e-mail não parece válido. Tenta de novo?';
+                    note.classList.add('err');
+                    input.focus();
+                    return;
+                }
+
+                // backup local sempre (caso o Telegram falhe)
+                try {
+                    const list = JSON.parse(localStorage.getItem('yande_waitlist') || '[]');
+                    if (!list.includes(v)) list.push(v);
+                    localStorage.setItem('yande_waitlist', JSON.stringify(list));
+                } catch (_) { }
+
+                // estado de envio
+                const original = button.innerHTML;
+                button.disabled = true;
+                button.style.opacity = '.7';
+                button.innerHTML = 'Enviando…';
+                note.textContent = '';
+
+                try {
+                    await sendToTelegram(v);
+                    note.textContent = 'Pronto! Você está na lista. Em breve, novidades pelo seu e-mail. ✦';
+                    note.classList.add('ok');
+                    input.value = '';
+                } catch (err) {
+                    console.error('[Yandê] Falha ao enviar para Telegram:', err);
+                    note.textContent = 'Anotamos seu e-mail aqui, mas tivemos um soluço ao notificar. Vamos te encontrar mesmo assim. ✦';
+                    note.classList.add('ok');
+                    input.value = '';
+                } finally {
+                    button.disabled = false;
+                    button.style.opacity = '';
+                    button.innerHTML = original;
+                }
+            });
+        })();
+
+        /* ============================================================
+           FUNDO 3D — partículas + esfera distorcida
+           ============================================================ */
+        (() => {
+            if (!window.THREE) return;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const canvas = document.getElementById('bg-canvas');
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x070708, 0.06);
+
+            const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 100);
+            camera.position.set(0, 0, 7);
+
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(innerWidth, innerHeight, false);
+            renderer.setClearColor(0x000000, 0);
+
+            // ---------- Escultura: Torus Knot iridescente ----------
+            const sculpture = new THREE.Group();
+            scene.add(sculpture);
+
+            const octoUniforms = {
+                uTime: { value: 0 },
+                uMouse: { value: new THREE.Vector2(0, 0) },
+                uColorA: { value: new THREE.Color('#ff6a3d') },
+                uColorB: { value: new THREE.Color('#7a5cff') },
+                uColorC: { value: new THREE.Color('#ffb86b') },
+            };
+
+            // ---- Knot principal (com distorção sutil de ruído) ----
+            const headGeo = new THREE.TorusKnotGeometry(1.5, 0.45, 360, 48, 2, 3);
+            const headMat = new THREE.ShaderMaterial({
+                uniforms: octoUniforms,
+                transparent: true,
+                vertexShader: /* glsl */`
+        uniform float uTime;
+        uniform vec2  uMouse;
+        varying vec3  vNormal;
+        varying vec3  vPos;
+        varying float vDisp;
+
+        // simplex noise (Ashima)
+        vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+        vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+        vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+        vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+        float snoise(vec3 v){
+          const vec2 C=vec2(1.0/6.0,1.0/3.0);
+          const vec4 D=vec4(0.0,0.5,1.0,2.0);
+          vec3 i=floor(v+dot(v,C.yyy));
+          vec3 x0=v-i+dot(i,C.xxx);
+          vec3 g=step(x0.yzx,x0.xyz);
+          vec3 l=1.0-g;
+          vec3 i1=min(g.xyz,l.zxy);
+          vec3 i2=max(g.xyz,l.zxy);
+          vec3 x1=x0-i1+C.xxx;
+          vec3 x2=x0-i2+C.yyy;
+          vec3 x3=x0-D.yyy;
+          i=mod289(i);
+          vec4 p=permute(permute(permute(
+                   i.z+vec4(0.0,i1.z,i2.z,1.0))
+                 + i.y+vec4(0.0,i1.y,i2.y,1.0))
+                 + i.x+vec4(0.0,i1.x,i2.x,1.0));
+          float n_=0.142857142857;
+          vec3 ns=n_*D.wyz-D.xzx;
+          vec4 j=p-49.0*floor(p*ns.z*ns.z);
+          vec4 x_=floor(j*ns.z);
+          vec4 y_=floor(j-7.0*x_);
+          vec4 x=x_*ns.x+ns.yyyy;
+          vec4 y=y_*ns.x+ns.yyyy;
+          vec4 h=1.0-abs(x)-abs(y);
+          vec4 b0=vec4(x.xy,y.xy);
+          vec4 b1=vec4(x.zw,y.zw);
+          vec4 s0=floor(b0)*2.0+1.0;
+          vec4 s1=floor(b1)*2.0+1.0;
+          vec4 sh=-step(h,vec4(0.0));
+          vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;
+          vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+          vec3 p0=vec3(a0.xy,h.x);
+          vec3 p1=vec3(a0.zw,h.y);
+          vec3 p2=vec3(a1.xy,h.z);
+          vec3 p3=vec3(a1.zw,h.w);
+          vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+          p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+          vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);
+          m=m*m;
+          return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+        }
+
+        // simplex noise (Ashima)
+        vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+        vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+        vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+        vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+        float snoise(vec3 v){
+          const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+          vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+          vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g;
+          vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+          vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
+          i=mod289(i);
+          vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))
+                + i.y+vec4(0.0,i1.y,i2.y,1.0)) + i.x+vec4(0.0,i1.x,i2.x,1.0));
+          float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+          vec4 j=p-49.0*floor(p*ns.z*ns.z);
+          vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+          vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy;
+          vec4 h=1.0-abs(x)-abs(y);
+          vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+          vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0;
+          vec4 sh=-step(h,vec4(0.0));
+          vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+          vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y);
+          vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+          vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+          p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+          vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+          return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+        }
+
+        void main(){
+          vNormal = normalize(normalMatrix * normal);
+          vec3 pos = position;
+          float n = snoise(pos*0.6 + vec3(uTime*0.25));
+          float disp = n*0.08 + sin(uTime*1.2 + pos.y*2.0)*0.02;
+          disp += (uMouse.x*0.04)*sin(pos.y*1.6 + uTime*0.5);
+          disp += (uMouse.y*0.04)*cos(pos.x*1.6 + uTime*0.5);
+          pos += normal * disp;
+          vDisp = disp;
+          vPos = pos;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos,1.0);
+        }
+      `,
+                fragmentShader: /* glsl */`
+        uniform vec3 uColorA;
+        uniform vec3 uColorB;
+        uniform vec3 uColorC;
+        uniform float uTime;
+        varying vec3 vNormal;
+        varying vec3 vPos;
+        varying float vDisp;
+
+        // gradiente iridescente baseado no ângulo de visão
+        vec3 iridescent(float t){
+          vec3 a = uColorA;          // brasa
+          vec3 b = uColorC;          // dourado
+          vec3 c = uColorB;          // violeta
+          vec3 d = vec3(0.13, 0.85, 0.70); // verde mata
+          float k = fract(t);
+          if (k < 0.33) return mix(a, b, k/0.33);
+          if (k < 0.66) return mix(b, c, (k-0.33)/0.33);
+          return mix(c, d, (k-0.66)/0.34);
+        }
+
+        void main(){
+          vec3 N = normalize(vNormal);
+          vec3 V = normalize(cameraPosition - vPos);
+          float fres = pow(1.0 - max(dot(N, V), 0.0), 2.4);
+          float band = N.y*0.5 + 0.5;
+          vec3 col = iridescent(band + uTime*0.04 + vDisp*1.2);
+          col += fres * 0.55;                    // brilho de borda
+          col = mix(col*0.4, col, fres*0.7+0.4); // núcleo mais escuro
+          float alpha = 0.7 + fres*0.4;
+          gl_FragColor = vec4(col, alpha);
+        }
+      `,
+            });
+            const knot = new THREE.Mesh(headGeo, headMat);
+            sculpture.add(knot);
+
+            // ---- Halo wireframe etéreo orbitando ----
+            const haloGeo = new THREE.TorusKnotGeometry(1.7, 0.06, 220, 12, 2, 3);
+            const haloMat = new THREE.ShaderMaterial({
+                uniforms: octoUniforms,
+                transparent: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexShader: /* glsl */`
+        uniform float uTime;
+        varying float vGlow;
+        void main(){
+          vec3 p = position;
+          vGlow = 0.5 + 0.5*sin(uTime*1.5 + p.x*2.0 + p.y*2.0);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p,1.0);
+        }
+      `,
+                fragmentShader: /* glsl */`
+        uniform vec3 uColorC;
+        varying float vGlow;
+        void main(){
+          gl_FragColor = vec4(uColorC, vGlow*0.35);
+        }
+      `,
+            });
+            const halo = new THREE.Mesh(haloGeo, haloMat);
+            sculpture.add(halo);
+
+            // ---- Pequenos cristais flutuando ao redor ----
+            const SHARDS = 12;
+            const shardGroup = new THREE.Group();
+            for (let i = 0; i < SHARDS; i++) {
+                const g = new THREE.OctahedronGeometry(0.08 + Math.random() * 0.08, 0);
+                const m = new THREE.MeshBasicMaterial({
+                    color: i % 2 === 0 ? 0xffb86b : 0x7a5cff,
+                    transparent: true,
+                    opacity: 0.55,
+                });
+                const s = new THREE.Mesh(g, m);
+                const ang = Math.random() * Math.PI * 2;
+                const rad = 2.6 + Math.random() * 1.2;
+                s.position.set(Math.cos(ang) * rad, (Math.random() - 0.5) * 2.2, Math.sin(ang) * rad);
+                s.userData = { ang, rad, speed: 0.2 + Math.random() * 0.3, yPhase: Math.random() * Math.PI * 2 };
+                shardGroup.add(s);
+            }
+            sculpture.add(shardGroup);
+
+            sculpture.position.set(2.6, 0.2, 0);
+            sculpture.scale.setScalar(1.0);
+
+            // ---------- Campo de partículas ----------
+            const PCOUNT = reduceMotion ? 600 : 1800;
+            const pGeo = new THREE.BufferGeometry();
+            const pPos = new Float32Array(PCOUNT * 3);
+            const pSiz = new Float32Array(PCOUNT);
+            for (let i = 0; i < PCOUNT; i++) {
+                const r = 6 + Math.random() * 18;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                pPos[i * 3 + 0] = r * Math.sin(phi) * Math.cos(theta);
+                pPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                pPos[i * 3 + 2] = r * Math.cos(phi) - 6;
+                pSiz[i] = Math.random() * 1.6 + 0.4;
+            }
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            pGeo.setAttribute('aSize', new THREE.BufferAttribute(pSiz, 1));
+
+            const pMat = new THREE.ShaderMaterial({
+                transparent: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                uniforms: { uTime: { value: 0 }, uPixel: { value: renderer.getPixelRatio() } },
+                vertexShader: /* glsl */`
+        attribute float aSize;
+        uniform float uTime;
+        uniform float uPixel;
+        varying float vAlpha;
+        void main(){
+          vec3 p = position;
+          p.y += sin(uTime*0.4 + position.x*0.2)*0.25;
+          p.x += cos(uTime*0.3 + position.z*0.15)*0.25;
+          vec4 mv = modelViewMatrix * vec4(p,1.0);
+          gl_PointSize = aSize * uPixel * (180.0 / -mv.z);
+          vAlpha = clamp(1.0 - (-mv.z/24.0), 0.0, 1.0);
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+                fragmentShader: /* glsl */`
+        varying float vAlpha;
+        void main(){
+          vec2 uv = gl_PointCoord - 0.5;
+          float d = length(uv);
+          float a = smoothstep(0.5, 0.0, d) * vAlpha;
+          gl_FragColor = vec4(vec3(1.0, 0.92, 0.78), a*0.55);
+        }
+      `,
+            });
+            const points = new THREE.Points(pGeo, pMat);
+            scene.add(points);
+
+            // ---------- Mouse parallax ----------
+            const mouse = new THREE.Vector2(0, 0);
+            const target = new THREE.Vector2(0, 0);
+            window.addEventListener('mousemove', e => {
+                target.x = (e.clientX / innerWidth) * 2 - 1;
+                target.y = -((e.clientY / innerHeight) * 2 - 1);
+            }, { passive: true });
+
+            const placeSculpture = () => {
+                const small = innerWidth < 820;
+                sculpture.position.x = small ? 0 : 2.6;
+                sculpture.position.y = small ? -1.4 : 0.2;
+                sculpture.scale.setScalar(small ? 0.7 : 1.0);
+            };
+            placeSculpture();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = innerWidth / innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(innerWidth, innerHeight, false);
+                placeSculpture();
+            });
+
+            const clock = new THREE.Clock();
+            const loop = () => {
+                const t = clock.getElapsedTime();
+                mouse.x += (target.x - mouse.x) * 0.05;
+                mouse.y += (target.y - mouse.y) * 0.05;
+
+                octoUniforms.uTime.value = t;
+                octoUniforms.uMouse.value.set(mouse.x, mouse.y);
+                pMat.uniforms.uTime.value = t;
+
+                // escultura: rotação suave + parallax do mouse
+                knot.rotation.y = t * 0.25 + mouse.x * 0.4;
+                knot.rotation.x = Math.sin(t * 0.2) * 0.2 - mouse.y * 0.25;
+                halo.rotation.y = -t * 0.18 + mouse.x * 0.2;
+                halo.rotation.x = t * 0.12 - mouse.y * 0.2;
+                sculpture.position.y += (Math.sin(t * 0.6) * 0.12 + (mouse.y * 0.3 - sculpture.position.y)) * 0.01;
+
+                // cristais orbitando
+                shardGroup.children.forEach(s => {
+                    const u = s.userData;
+                    u.ang += 0.003 * u.speed;
+                    s.position.x = Math.cos(u.ang) * u.rad;
+                    s.position.z = Math.sin(u.ang) * u.rad;
+                    s.position.y = Math.sin(t * 0.6 + u.yPhase) * 0.6;
+                    s.rotation.x += 0.01;
+                    s.rotation.y += 0.015;
+                });
+
+                points.rotation.y = t * 0.02 + mouse.x * 0.15;
+                points.rotation.x = mouse.y * 0.1;
+
+                camera.position.x += (mouse.x * 0.6 - camera.position.x) * 0.04;
+                camera.position.y += (mouse.y * 0.4 - camera.position.y) * 0.04;
+                camera.lookAt(0, 0, 0);
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(loop);
+            };
+            loop();
+        })();
+
+        /* ============================================================
+           LOADER — espera fontes + assets para um reveal sem "trancos"
+           ============================================================ */
+        (() => {
+            const minDelay = new Promise(r => setTimeout(r, 1600));
+            const fontsReady = (document.fonts && document.fonts.ready) || Promise.resolve();
+            const loadEvent = new Promise(r => {
+                if (document.readyState === 'complete') r();
+                else window.addEventListener('load', r, { once: true });
+            });
+
+            Promise.all([minDelay, fontsReady, loadEvent]).then(() => {
+                document.body.classList.add('ready');
+                // pequeno atraso para a barra do loader concluir antes de sumir
+                setTimeout(() => {
+                    document.getElementById('loader')?.classList.add('gone');
+                }, 200);
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
