@@ -39,6 +39,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://maps.google.com" />
+  <link rel="dns-prefetch" href="https://www.google.com" />
+  <link rel="dns-prefetch" href="https://maps.gstatic.com" />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/styles.css" />
@@ -591,10 +594,16 @@
           <div class="local__mapa" data-reveal>
             <iframe
               title="Mapa: Empresarial Excelsior, Recife, PE"
-              src="https://maps.google.com/maps?q=Empresarial%20Excelsior%2C%20Recife%20-%20PE&z=16&output=embed"
-              loading="lazy"
+              data-src="https://maps.google.com/maps?q=Empresarial%20Excelsior%2C%20Recife%20-%20PE&z=16&output=embed"
               referrerpolicy="no-referrer-when-downgrade"
               allowfullscreen></iframe>
+            <noscript>
+              <iframe
+                title="Mapa: Empresarial Excelsior, Recife, PE"
+                src="https://maps.google.com/maps?q=Empresarial%20Excelsior%2C%20Recife%20-%20PE&z=16&output=embed"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen></iframe>
+            </noscript>
           </div>
         </div>
       </div>

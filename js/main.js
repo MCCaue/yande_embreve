@@ -23,11 +23,15 @@
 
   /* ===== Modo leve: dispositivos fracos ganham o site sem custo de GPU.
      Detecção estática (núcleos/memória) + watchdog de FPS em runtime. ===== */
+  // Detecção estática só para casos inequívocos: iPhone Safari reporta
+  // 4 núcleos (mascarados) e não expõe deviceMemory, então núcleos<=4
+  // marcava iPhone como fraco e apagava os canvases. O resto é papel
+  // do watchdog de FPS, que mede a máquina de verdade.
   const estado = {
     leve:
       /[?&]leve=1/.test(location.search) ||
-      (navigator.hardwareConcurrency || 8) <= 4 ||
-      (navigator.deviceMemory || 8) <= 4,
+      (navigator.deviceMemory || 8) <= 4 ||
+      (navigator.hardwareConcurrency || 8) <= 2,
   };
   function ativarModoLeve() {
     if (estado.leve) return aplicarModoLeve();
@@ -766,6 +770,22 @@
     }
     desenha();
   }
+
+  /* ===== Mapa: começa a carregar ~2 telas antes do usuário chegar ===== */
+  function mapa() {
+    const ifr = $('.local__mapa iframe[data-src]');
+    if (!ifr) return;
+    const carrega = () => { if (!ifr.src) ifr.src = ifr.dataset.src; };
+    if (!('IntersectionObserver' in window)) return carrega();
+    const io = new IntersectionObserver((ents) => {
+      if (ents.some((e) => e.isIntersecting)) {
+        carrega();
+        io.disconnect();
+      }
+    }, { rootMargin: '2400px 0px' });
+    io.observe(ifr);
+  }
+  mapa();
 
   /* ===== Formulário → WhatsApp ===== */
   const NUMERO = '5575998615843';
