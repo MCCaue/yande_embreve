@@ -1385,14 +1385,7 @@ body.com-menu .nav {
   .servico__row { grid-template-columns: 2.4rem minmax(0, 1fr); grid-template-areas: "num nome" "num desc"; }
 }
 
-/* ===== Movimento reduzido ===== */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001s !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001s !important;
-  }
-  html { scroll-behavior: auto; }
-  .js-anima [data-reveal] { opacity: 1; translate: 0 0; }
-  .plancton { display: none; }
-}
+/* Sem bloco de prefers-reduced-motion: decisão de produto.
+   Windows/Android em economia de energia ligam esse sinal e o site
+   inteiro ficava estático, parecendo quebrado. A degradação de
+   performance é responsabilidade do modo leve (watchdog de FPS). */

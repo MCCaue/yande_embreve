@@ -9,7 +9,11 @@
 
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Decisão de produto (Matheus, 2026-06-10): ignorar o "reduzir movimento"
+  // do SO. Windows/Android em economia de energia ligam esse sinal e o site
+  // inteiro parecia morto. A experiência renderiza completa sempre; quem não
+  // sustenta os frames cai no modo leve via watchdog, não via sinal do SO.
+  const reduceMotion = false;
   const finePointer = window.matchMedia('(pointer: fine)').matches;
 
   // js-anima esconde [data-reveal] até a animação revelar. Só pode entrar
