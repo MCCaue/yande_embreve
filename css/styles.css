@@ -80,10 +80,11 @@ button, input, textarea { font: inherit; color: inherit; }
 }
 .section { padding-block: clamp(5rem, 12vh, 8.5rem); }
 
-/* ===== Grain ===== */
+/* ===== Grain =====
+   Camada só 16% maior que a tela (era 200%: ~4x mais memória de GPU);
+   a textura é repetida, então o translate curto nunca expõe borda. */
 .grain {
-  position: fixed; inset: -50%;
-  width: 200%; height: 200%;
+  position: fixed; inset: -8%;
   pointer-events: none;
   z-index: 2000;
   opacity: 0.05;
@@ -97,6 +98,20 @@ button, input, textarea { font: inherit; color: inherit; }
   60% { transform: translate(-2%, -2%); }
   80% { transform: translate(3%, 3%); }
 }
+
+/* ===== Modo leve: dispositivos fracos =====
+   Mantém a experiência (reveals, contadores, faixas, tilt),
+   corta o que custa GPU: canvases, grain animado, blur do nav. */
+.modo-leve .plancton,
+.modo-leve .hero__canvas { display: none; }
+.modo-leve .grain { animation: none; }
+.modo-leve .hero__linhas { animation: none; }
+.modo-leve .nav--solida {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: color-mix(in oklab, var(--deep) 97%, black);
+}
+.modo-leve .zap::after { animation: none; }
 
 /* ===== Entrada: o sonar do Yan =====
    Cinematográfica e dirigida por GSAP: o símbolo emerge, dois anéis

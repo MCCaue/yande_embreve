@@ -12,7 +12,29 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(pointer: fine)').matches;
 
-  document.body.classList.add('js-anima');
+  // js-anima esconde [data-reveal] até a animação revelar. Só pode entrar
+  // se GSAP+ScrollTrigger realmente carregaram (CDN bloqueada em redes
+  // corporativas não pode deixar o conteúdo invisível para sempre).
+  if (window.gsap && window.ScrollTrigger) document.body.classList.add('js-anima');
+
+  /* ===== Modo leve: dispositivos fracos ganham o site sem custo de GPU.
+     Detecção estática (núcleos/memória) + watchdog de FPS em runtime. ===== */
+  const estado = {
+    leve:
+      /[?&]leve=1/.test(location.search) ||
+      (navigator.hardwareConcurrency || 8) <= 4 ||
+      (navigator.deviceMemory || 8) <= 4,
+  };
+  function ativarModoLeve() {
+    if (estado.leve) return aplicarModoLeve();
+    estado.leve = true;
+    aplicarModoLeve();
+    if (lenis) { lenis.destroy(); lenis = null; }
+  }
+  function aplicarModoLeve() {
+    document.body.classList.add('modo-leve');
+  }
+  if (estado.leve) aplicarModoLeve();
 
   /* ===== Entrada: o sonar do Yan =====
      O símbolo emerge, dois anéis de sonar se expandem e a tela
@@ -27,7 +49,7 @@
     introHero();
   }
   function entradaCinematica() {
-    if (reduceMotion || !window.gsap) {
+    if (reduceMotion || estado.leve || !window.gsap) {
       tinta.classList.add('tinta--saiu');
       finalizarEntrada();
       setTimeout(() => tinta.remove(), 600);
@@ -66,7 +88,7 @@
     if (!window.gsap || !window.ScrollTrigger) return;
     gsap.registerPlugin(ScrollTrigger);
 
-    if (!reduceMotion && window.Lenis) {
+    if (!reduceMotion && !estado.leve && window.Lenis) {
       lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, smoothWheel: true });
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add((t) => lenis.raf(t * 1000));
@@ -77,11 +99,13 @@
     citacoes();
     reveals();
     faixas();
-    parallax();
     contadores();
-    heroSaida();
-    abismoZoom();
     porqueTilt();
+    if (!estado.leve) {
+      parallax();
+      heroSaida();
+      abismoZoom();
+    }
   }
 
   /* ===== Títulos cinéticos: máscara que sobe ===== */
@@ -439,7 +463,7 @@
   /* ===== Canvas: tentáculos vivos no hero ===== */
   function tentaculos() {
     const canvas = $('#tentaculos');
-    if (!canvas || reduceMotion) return;
+    if (!canvas || reduceMotion || estado.leve) return;
     const ctx = canvas.getContext('2d');
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w, h, visivel = true, t = 0;
@@ -471,6 +495,7 @@
     });
 
     function desenha() {
+      if (estado.leve) return;
       requestAnimationFrame(desenha);
       if (!visivel) return;
       t += 0.0042;
@@ -512,7 +537,7 @@
   /* ===== Canvas: plâncton vivo + fio do mergulho ===== */
   function plancton() {
     const canvas = $('#plancton');
-    if (!canvas || reduceMotion) return;
+    if (!canvas || reduceMotion || estado.leve) return;
     const ctx = canvas.getContext('2d');
     // 1.5 basta para brilhos suaves e corta ~44% do custo de rasterização em retina
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -683,9 +708,24 @@
       }, { passive: true });
     }
 
-    function desenha() {
+    let tAnterior = 0;
+    let quadrosTotal = 0;
+    let quadrosLentos = 0;
+    function desenha(agora) {
+      if (estado.leve) { ctx.clearRect(0, 0, w, h); return; }
       requestAnimationFrame(desenha);
-      if (document.hidden) return;
+      if (document.hidden) { tAnterior = 0; return; }
+      // watchdog: se a máquina não sustenta ~36fps por 2s, liga o modo leve
+      if (tAnterior) {
+        quadrosTotal++;
+        if (agora - tAnterior > 28) quadrosLentos++;
+        if (quadrosTotal >= 120) {
+          if (quadrosLentos > 70) { ativarModoLeve(); return; }
+          quadrosTotal = 0;
+          quadrosLentos = 0;
+        }
+      }
+      tAnterior = agora;
       t += 0.012;
       ponteiroX += (alvoX - ponteiroX) * 0.025;
       ponteiroY += (alvoY - ponteiroY) * 0.025;
