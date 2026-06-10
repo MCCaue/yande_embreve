@@ -428,14 +428,7 @@ body.com-menu .nav {
 .ponto { color: var(--neon); font-weight: inherit; }
 .hero__title em {
   font-style: normal;
-  background: var(--grad-logo);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.hero__title em .ponto {
-  background: none;
-  -webkit-text-fill-color: var(--neon);
+  color: var(--neon);
 }
 .hero__sub {
   margin-top: 2rem;
