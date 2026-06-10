@@ -1,0 +1,9 @@
+# Material interno: nunca publicar (repo público + Vercel serve tudo)
+.DS_Store
+.remember/
+.playwright-mcp/
+/ID/
+/trabalhos/
+
+# Screenshots de validação na raiz (assets/img/ não é afetado)
+/*.png
