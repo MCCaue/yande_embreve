@@ -778,7 +778,11 @@ body.com-menu .nav {
     url("../assets/img/linhas.png") no-repeat 115% 130% / 70%,
     color-mix(in oklab, var(--deep) 92%, black);
 }
-.trabalho--3 .trabalho__tile { background: var(--grad-neon); }
+.trabalho--3 .trabalho__tile {
+  background:
+    radial-gradient(28rem 18rem at 12% 115%, color-mix(in oklab, var(--neon) 14%, transparent), transparent 70%),
+    var(--grad-dark);
+}
 .trabalho--4 .trabalho__tile {
   background:
     radial-gradient(26rem 18rem at 10% -10%, color-mix(in oklab, var(--jade) 30%, transparent), transparent 70%),
@@ -797,22 +801,6 @@ body.com-menu .nav {
   transform: scale(1.04) translateY(-4px);
   box-shadow: 0 34px 80px -24px color-mix(in oklab, black 85%, transparent);
 }
-.trabalho__monograma {
-  font-size: clamp(4.5rem, 10vw, 8.5rem);
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 1;
-  background: var(--grad-neon);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  transition: transform 0.6s var(--ease);
-}
-.trabalho--3 .trabalho__monograma {
-  background: none;
-  -webkit-text-fill-color: var(--deep);
-}
-.trabalho:hover .trabalho__monograma { transform: scale(1.08); }
 .trabalho__info h3 {
   font-size: 1.25rem; font-weight: 600;
   letter-spacing: -0.01em;
